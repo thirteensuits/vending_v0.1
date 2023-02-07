@@ -30,10 +30,6 @@ function Product4() {
         <Provider store={store4}>
           <Mint4 />
         </Provider>
-        <br></br>
-        <Link to="/" onClick={() => {window.scroll(0, 0);}}> 
-          <button className="lognBtn" style={{paddingLeft: 20, paddingRight: 20}}>Back</button>
-        </Link>
         </div>
       </div>
 
