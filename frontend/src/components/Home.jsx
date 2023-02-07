@@ -12,7 +12,9 @@ function Home() {
   <div>
      <section id ="top"></section>
       <div class="borders">
-        <h2 class="top" style={{textAlign: "center"}}><b>SELECT PRODUCT</b></h2>
+        <br></br>
+        <br></br>
+        <h2 style={{textAlign: "center"}}><b>SELECT PRODUCT</b></h2>
         <section id ="hook">
           <div class="thick">
           <Link to="/QR1">
