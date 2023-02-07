@@ -13,7 +13,7 @@ function QR4() {
         <img src={QR} style={{width: "80%"}}/>
         <br></br>
             <br></br>
-            <Link to="/#top">
+             <Link to="/" onClick={() => {window.scroll(0, 0);}}> 
             <button className="lognBtn" style={{paddingLeft: 20, paddingRight: 20}}>Back</button>
             </Link>
 
