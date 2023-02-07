@@ -1,4 +1,5 @@
 import React, {useState, useEffect} from "react";
+import GIF from "./images/Algebra_logo.gif";
 import themala from './images/themala.gif';
 import think from './images/thinking.jpg';
 import donut from './images/donuts.jpg';
@@ -7,9 +8,25 @@ import {Link} from "react-router-dom";
 
 
 function Home() {
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    setLoading(true)
+    setTimeout(() => {
+      setLoading(false)
+    },2200)
+  },[])
 
   return (
   <div>
+        {
+      loading ? (
+        <div style={{textAlign: "center"}}>
+      <img src={GIF} loading={loading} class="opener" />
+      </div>
+
+      ) : (
+      <>
      <section id ="top"></section>
       <div class="borders">
         <br></br>
@@ -49,7 +66,9 @@ function Home() {
           </Link>
           </div>
         </section>
-      </div>
+      </div></>
+            )
+                  }
       </div>
 
 
