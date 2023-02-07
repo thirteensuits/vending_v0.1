@@ -31,7 +31,7 @@ function Product1() {
           <Mint />
         </Provider>
         <br></br>
-        <Link to="/#top">
+        <Link to="/" onClick={() => {window.scroll(0, 0);}}> 
           <button className="lognBtn" style={{paddingLeft: 20, paddingRight: 20}}>Back</button>
         </Link>
         </div>
