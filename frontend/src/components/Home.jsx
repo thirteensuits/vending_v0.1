@@ -34,7 +34,7 @@ function Home() {
         <h2 style={{textAlign: "center"}}><b>SELECT PRODUCT</b></h2>
         <section id ="hook">
           <div class="thick">
-          <Link to="/QR1">
+          <Link to="/QR1" onClick={() => {window.scroll(0, 0);}}>
           <img src={themala} style={{width: "80%"}}/>
           <br></br>
           <br></br>
@@ -42,7 +42,7 @@ function Home() {
           </Link>
           </div>
           <div class="thick">
-          <Link to="/QR2">
+          <Link to="/QR2" onClick={() => {window.scroll(0, 0);}}>
           <img src={donut} style={{width: "80%"}}/>
           <br></br>
           <br></br>
@@ -50,7 +50,7 @@ function Home() {
           </Link>
           </div>
           <div class="thick">
-          <Link to="/QR3">
+          <Link to="/QR3" onClick={() => {window.scroll(0, 0);}}>
           <img src={shirt} style={{width: "80%"}}/>
           <br></br>
           <br></br>
@@ -58,7 +58,7 @@ function Home() {
           </Link>
           </div>
           <div class="thick">
-          <Link to="/QR4">
+          <Link to="/QR4" onClick={() => {window.scroll(0, 0);}}>
           <img src={think} style={{width: "80%"}}/>
           <br></br>
           <br></br>
