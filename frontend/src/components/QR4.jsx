@@ -10,7 +10,7 @@ function QR4() {
         <h2 class="top" style={{textAlign: "center"}}><b>Harold</b></h2>
         <div style={{textAlign: "center"}}>
         <p>Scan the QR Code below</p>
-        <img src={QR} style={{width: "80%"}}/>
+        <img src={QR} style={{width: "40%"}}/>
         <br></br>
             <br></br>
              <Link to="/" onClick={() => {window.scroll(0, 0);}}> 
