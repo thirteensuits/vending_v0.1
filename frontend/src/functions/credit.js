@@ -2,40 +2,56 @@ import React, { useState } from 'react';
 import MintNFTButton from './button';
 
 const Credit = () => {
+  const [popupOpened, setPopupOpened] = useState(false);
   const [popupClosed, setPopupClosed] = useState(false);
 
   const openWebsiteA = () => {
-    // Open "Website A" in a popup window
+    // Open "Website A" in a new window using a direct link
     const popup = window.open(
       'https://gateway.1shop.tw/send-Payment.php?token=97662ae30a55ea9d53f77234a2663bcd84df4405',
-      '_blank',
-      'width=800,height=600'
+      '_blank'
     );
-
-    // Add an event listener to detect when the popup is closed
+    setPopupOpened(true);
+    // Add an event listener to detect when the new window is closed
     const checkPopupClosed = () => {
       if (popup && popup.closed) {
-        // Update the state to indicate that the popup is closed
+        // Update the state to indicate that the new window is closed
         setPopupClosed(true);
       } else {
-        // If the popup is not closed, check again after a short delay
+        // If the new window is not closed, check again after a short delay
         setTimeout(checkPopupClosed, 1000);
       }
     };
-    // Start checking for popup closure
+    // Start checking for new window closure
     checkPopupClosed();
   };
 
   return (
     <div>
-      {!popupClosed && ( // Only render if the popup is not closed
-        <button onClick={openWebsiteA} className="lognBtn" style={{ paddingLeft: 20, paddingRight: 20 }}>
+      {!popupOpened && (
+        <button
+          onClick={openWebsiteA}
+          className="lognBtn"
+          style={{ paddingLeft: 20, paddingRight: 20 }}
+        >
           Purchase using Credit Card
         </button>
       )}
-      {popupClosed && <p><b>Transaction Status:</b><br></br><b style={{color: "red"}}>Success!! Plx press Confirm to complete 👇🏻</b><br></br><br></br><MintNFTButton className="lognBtn" style={{ paddingLeft: 20, paddingRight: 20 }}></MintNFTButton></p>}
+      {popupClosed && (
+        <p>
+          <b>Transaction Status:</b>
+          <br />
+          <b style={{ color: 'red' }}>Success!! Plx press Confirm to complete 👇🏻</b>
+          <br />
+          <br />
+          <MintNFTButton
+            className="lognBtn"
+            style={{ paddingLeft: 20, paddingRight: 20 }}
+          ></MintNFTButton>
+        </p>
+      )}
     </div>
   );
 };
- 
+
 export default Credit;
