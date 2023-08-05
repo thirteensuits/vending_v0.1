@@ -7,24 +7,30 @@ import "https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contr
 import "https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/access/Ownable.sol";
 import "https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/utils/Strings.sol";
 
-contract ProductSBT is ERC721Enumerable, Ownable {
+contract ProductSBT is ERC721Enumerable {
 
     using Strings for uint256;
     string public baseURI;
     string public baseExtension = ".json";
     uint256 public cost;
     bool public paused = false;
+    address public owner;
 
     constructor(
         string memory _name,
         string memory _symbol,
         string memory _initBaseURI,
-        address initialOwner,
         uint256 _cost
-    ) Ownable(initialOwner)
+    )
     ERC721(_name, _symbol) {
         setCost(_cost);
         setBaseURI(_initBaseURI);
+        owner = msg.sender;
+    }
+
+    modifier onlyOwner() {
+        require(msg.sender == owner, "You are not the owner");
+        _;
     }
 
     function _baseURI() internal view virtual override returns (string memory) {
