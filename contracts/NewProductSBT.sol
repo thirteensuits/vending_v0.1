@@ -14,22 +14,28 @@ contract ProductSBT is ERC721Enumerable {
     string public baseExtension = ".json";
     uint256 public cost;
     bool public paused = false;
-    address public owner;
+    string public _name;
+    string public _symbol;
+    address public controller = msg.sender;
+    address public _master;
 
     constructor(
-        string memory _name,
-        string memory _symbol,
+        string memory _initName,
+        string memory _initSymbol,
         string memory _initBaseURI,
-        uint256 _cost
-    )
+        uint256 _cost,
+        address _initMaster
+    ) 
     ERC721(_name, _symbol) {
         setCost(_cost);
         setBaseURI(_initBaseURI);
-        owner = msg.sender;
+        _master = _initMaster;
+        _name = _initName;
+        _symbol = _initSymbol;
     }
 
     modifier onlyOwner() {
-        require(msg.sender == owner, "You are not the owner");
+        require(msg.sender == controller || msg.sender == _master, "You are not the owner");
         _;
     }
 
@@ -37,11 +43,11 @@ contract ProductSBT is ERC721Enumerable {
         return baseURI;
     }
 
-    function mint(address _to) public payable {
+    function mint() public payable {
         uint256 supply = totalSupply();
         require(!paused);
         require(msg.value >= cost);
-            _safeMint(_to, supply + 1);
+            _safeMint(msg.sender, supply + 1);
     }
 
     function walletOfOwner(address _owner)
@@ -87,6 +93,22 @@ contract ProductSBT is ERC721Enumerable {
         cost = _newCost;
     }
 
+    function setName(string memory newName) public onlyOwner {
+        _name = newName;
+    }
+
+    function setSymbol(string memory newSymbol) public onlyOwner {
+        _symbol = newSymbol;
+    }
+
+    function name() public view override returns (string memory) {
+        return _name;
+    }
+
+    function symbol() public view override returns (string memory) {
+        return _symbol;
+    }
+
     function transferFrom(
         address from,
         address to,
@@ -115,8 +137,12 @@ contract ProductSBT is ERC721Enumerable {
         baseExtension = _newBaseExtension;
     }
 
-    function pause(bool _state) public onlyOwner {
-        paused = _state;
+    function pause() public onlyOwner {
+        paused = true;
+    }
+
+    function unpause() public onlyOwner {
+        paused = false;
     }
 
     function withdraw() public payable onlyOwner {
