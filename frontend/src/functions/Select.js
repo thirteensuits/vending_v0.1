@@ -1,0 +1,276 @@
+import React, { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import demo from '../components/images/demo.png';
+import Web3 from 'web3';
+import Credit from './credit';
+
+
+const Select = () => {
+  const [connected, setConnected] = useState(false);
+
+  const dispatch = useDispatch();
+  const [address, setAddress] = useState('');
+  const [contract, setContract] = useState(['']);
+  const [walletAddress, setWalletAddress] = useState('');
+
+  const blockchain = useSelector((state) => state.blockchain);
+  const [feedback, setFeedback] = useState(``);
+  const [feedback2, setFeedback2] = useState(``);
+  const [balance, setBalance] = useState(0);
+  const [balance2, setBalance2] = useState(0);
+  const [name, setName] = useState(['']);
+  const [cost, setCost] = useState(['']);
+
+  const getContract = async () => {
+    try {
+      const web3 = new Web3(`https://api.sepolia.kroma.network/`);
+      const contractAddress = '0x0d8fADf81217d8d8F65409aC2168927537d1B520';
+      const contractABI = [	{
+        "inputs": [
+          {
+            "internalType": "address",
+            "name": "deployer",
+            "type": "address"
+          }
+        ],
+        "name": "getSBTsByDeployer",
+        "outputs": [
+          {
+            "internalType": "address[]",
+            "name": "",
+            "type": "address[]"
+          }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+      },]; 
+      const contract = new web3.eth.Contract(contractABI, contractAddress);
+      const balanceWei = await contract.methods.getSBTsByDeployer(address).call();
+      setContract(balanceWei);
+      return Promise.resolve(); // Return a resolved Promise
+    } catch (err) {
+      console.error('Error fetching data:', err);
+      return Promise.reject(err); // Return a rejected Promise
+    }
+  };
+
+  const getName = async () => {
+    try {
+      const web3 = new Web3(`https://api.sepolia.kroma.network/`);
+      const contractAddress2 = contract[0];
+      const contractABI2 = [		{
+        "inputs": [],
+        "name": "_name",
+        "outputs": [
+          {
+            "internalType": "string",
+            "name": "",
+            "type": "string"
+          }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+      },]; 
+      const contract2 = new web3.eth.Contract(contractABI2, contractAddress2);
+      const balanceWei2 = await contract2.methods._name().call();
+      setName(balanceWei2);
+      return Promise.resolve(); // Return a resolved Promise
+    } catch (err) {
+      console.error('Error fetching balance:', err);
+    }
+  };
+
+  const getCost = async () => {
+    try {
+      const web3 = new Web3(`https://api.sepolia.kroma.network/`);
+      const contractAddress2 = contract[0];
+      const contractABI2 = [	{
+        "inputs": [],
+        "name": "cost",
+        "outputs": [
+          {
+            "internalType": "uint256",
+            "name": "",
+            "type": "uint256"
+          }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+      },]; 
+      const contract2 = new web3.eth.Contract(contractABI2, contractAddress2);
+      const balanceWei2 = await contract2.methods.cost().call();
+      setCost(balanceWei2);
+      return Promise.resolve(); // Return a resolved Promise
+    } catch (err) {
+      console.error('Error fetching balance:', err);
+    }
+  };
+
+  const fetchData = async () => {
+    try {
+      const contractData = await Promise.all([getContract(), getName(), getCost()]);
+      // Contract data has been fetched and set
+    } catch (err) {
+      console.error('Error fetching data:', err);
+    }
+  };
+
+  const claimNFTs = () => {
+    let cost = 10;
+    let gasLimit = 285000;
+    let totalCostWei = String(cost);
+    let totalGasLimit = String(gasLimit);
+    console.log("Cost: ", totalCostWei);
+    console.log("Gas limit: ", totalGasLimit);
+    setFeedback(`Purchasing, plx wait...`);
+    blockchain.smartContract.methods
+      .mint(blockchain.account)
+      .send({
+        gasLimit: String(totalGasLimit),
+        from: blockchain.account,
+        value: totalCostWei,
+      })
+      .once("error", (err) => {
+        console.log(err);
+        setFeedback("Sorry, something went wrong, plx try again...");
+      })
+      .then((receipt) => {
+        console.log(receipt);
+        setFeedback(
+          `WOW, you got it`
+        );
+      });
+  };
+
+  const getBalance = async () => {
+    try {
+      const web3 = new Web3(`https://api.sepolia.kroma.network/`);
+      const balanceWei = await web3.eth.getBalance(contract[0]);
+      setBalance(balanceWei);
+    } catch (err) {
+      console.error('Error fetching balance:', err);
+    }
+  };
+
+
+  const connectWallet = async () => {
+    try {
+      if (window.ethereum) {
+        // Request access to the user's MetaMask account
+        await window.ethereum.enable();
+        const accounts = await window.ethereum.request({ method: 'eth_accounts' });
+        if (accounts && accounts.length > 0) {
+          setConnected(true);
+          setWalletAddress(accounts[0]);
+        } else {
+        }
+      } else {
+      }
+    } catch (error) {
+      console.error('Error connecting to MetaMask:', error);
+      setFeedback('Error connecting to MetaMask');
+    }
+  };
+
+
+  const mintNFT = async () => {
+    try {
+      if (!window.ethereum) {
+        setFeedback('Please install MetaMask');
+        return;
+      }
+      const web3 = new Web3(window.ethereum);
+      // You should use the ABI of the actual NFT contract
+      const contractABI = [	{
+        "inputs": [],
+        "name": "mint",
+        "outputs": [],
+        "stateMutability": "payable",
+        "type": "function"
+      },]; // Replace with the ABI of the NFT contract
+      const sup = contract[0];
+      const nftContract = new web3.eth.Contract(contractABI, sup);
+      // Mint NFT (This assumes the minting function is called "mint")
+      setFeedback(`Purchasing, plx wait...`);
+      await nftContract.methods.mint().send({
+        gasLimit: String(285000),
+        from: walletAddress,
+        value: String(50),
+      })
+      .once("error", (err) => {
+        console.log(err);
+        setFeedback("Sorry, something went wrong, plx try again...");
+      })
+      .then((receipt) => {
+        console.log(receipt);
+        setFeedback(
+          `WOW, you got it`
+        );
+      });
+
+      setFeedback(`WOW, you got it`);
+    } catch (error) {
+      console.error('Error minting NFT:', error);
+      setFeedback('Error minting NFT');
+    }
+  };
+
+  return (
+      <div style={{textAlign: 'center'}}>
+        <b>ADDRESS OF STORE:</b>
+        <br></br>
+        <br></br>
+        <input value={address} onChange={(e) => setAddress(e.target.value)}></input>
+        <br></br>
+        <br></br>
+        <button style={{padding: 5, paddingLeft: 20, paddingRight: 20}} onClick={fetchData}>See Store</button>
+        <br></br>
+        <br></br>
+        {contract[0] && ( // Check if contract[0] exists before rendering
+          <>
+            Product #1:
+            <br></br>
+            <b>{contract[0]}</b>
+            <br></br>
+            <br></br>
+            Name:
+            <br></br>
+            <b>{name}</b> {/* You should replace this with the actual name */}
+            <br></br>
+            <br></br>
+            Product Image:
+            <br></br>
+            <img src={demo} style={{width: "25%"}}/>
+            <br></br>
+            <br></br>
+            Cost:
+            <br></br>
+            <b>{cost} wei</b> {/* You should replace this with the actual cost */}
+            <br></br>
+            <br></br>
+            <div style={{textAlign: 'center'}}>
+            {connected ? (
+        <>
+          <button style={{padding: 5, paddingLeft: 20, paddingRight: 20}} onClick={mintNFT}>
+          Purchase Product!!
+          </button>
+          <br></br>
+            <br></br>
+          <b>Transaction Status:</b>
+            <br></br>
+            <b style={{color: "red"}}>{feedback}</b>
+                    </>
+      ) : (
+        <button style={{padding: 5, paddingLeft: 20, paddingRight: 20}} onClick={connectWallet}>Connect your Wallet to Purchase Product</button>
+      )}
+      </div>
+            <br></br>
+            <br></br>
+            <Credit/>
+          </>
+                  )}
+      </div>
+  );
+}
+
+export default Select;
